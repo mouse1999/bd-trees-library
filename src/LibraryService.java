@@ -1,5 +1,8 @@
+import model.Book;
 import org.apache.commons.lang3.NotImplementedException;
 import treestructure.BookNode;
+
+import java.util.Stack;
 
 /**
  * Application to test traversing Binary Trees and Binary Search Trees.
@@ -34,9 +37,26 @@ public class LibraryService {
      *         false otherwise
      */
     public boolean isBookInLibraryByIsbn(String isbn) {
-        // PARTICIPANTS: IMPLEMENT YOUR BINARY SEARCH HERE
 
-        throw new NotImplementedException("isBookInLibraryByIsbn is not yet implemented!");
+        if(books == null || isbn == null){
+            return false;
+
+        }
+
+        BookNode p = books;
+
+        while (p != null) {
+            int comparison = isbn.compareTo(p.getBook().getIsbn());
+
+            if (comparison == 0) {
+                return true;
+            } else if (comparison < 0) {
+                p = p.getLeft();
+            } else {
+                p = p.getRight();
+            }
+        }
+        return false;
     }
 
 
@@ -50,8 +70,29 @@ public class LibraryService {
      *         false otherwise
      */
     public boolean isBookInLibraryByTitleAndAuthor(String title, String author) {
-        // PARTICIPANTS: IMPLEMENT YOUR DEPTH FIRST SEARCH HERE
+        if (books == null) return false;
 
-        throw new NotImplementedException("isBookInLibraryByTitleAndAuthor is not yet implemented!");
+        Stack<BookNode> stack = new Stack<>();
+        stack.push(books); // Start from the root
+
+        while (!stack.isEmpty()) {
+            BookNode current = stack.pop();
+            Book book = current.getBook();
+
+            // Check if this is the book we are looking for
+            if (book.getTitle().equals(title) && book.getAuthor().equals(author)) {
+                return true;
+            }
+
+            // Push children onto the stack (right first so left is processed first)
+            if (current.getRight() != null) {
+                stack.push(current.getRight());
+            }
+            if (current.getLeft() != null) {
+                stack.push(current.getLeft());
+            }
+        }
+
+        return false; // Book not found
     }
 }
